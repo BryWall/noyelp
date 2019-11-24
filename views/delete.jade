@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    form(action='/delete/#{restaurant._id}', method = 'POST')
+        h1 Etes-vous sûr de vouloir supprimer #{restaurant.name} ?
+        .form-group
+            .btn-group
+                button.btn.btn.primary(type="submit") Delete
+                a(href="/")
+                    button.btn.btn-danger(type="button") Cancel

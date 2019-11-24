@@ -22,5 +22,18 @@ router.post('/create', (req, res, next) => {
   })
 });
 
+router.get('/delete/:id', (req, res, next) => {
+  mongoose.model('Restaurant').findById(req.params.id, (err, restaurant) => {
+    res.render('delete', {restaurant})
+  });
+});
+
+router.post('/delete/:id', (req, res, next) => {
+  mongoose.model('Restaurant').findByIdAndDelete(req.params.id, (err, restaurant) => {
+    if(err)
+      return res.send(err);
+    res.redirect('/');
+  });
+});
 
 module.exports = router;
