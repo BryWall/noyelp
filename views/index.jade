@@ -1,5 +1,24 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  ul.nav(style='margin-top: 80px').navbar-dark.bg-dark
+
+  table.table
+    thead
+      th Name
+      th ZipCode
+      th Neighborhood
+      th CouncilDistrict
+      th Location
+      th
+    tbody
+      each restaurant in restaurants
+        tr
+          td #{restaurant.name}
+          td #{restaurant.zipCode}
+          td #{restaurant.neighborhood}
+          td #{restaurant.councilDistrict}
+          td #{restaurant.location}
+          td
+            a(href='/') 🖊️
+            a(href='/') 🗑️

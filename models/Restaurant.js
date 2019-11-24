@@ -21,6 +21,7 @@ let RestaurantSchema = new Schema({
             keyword: { type: 'text', analyzer: 'keyword_analyzer', index: 'analyzed'}
         }
     },
+    councilDistrict: { type: Number, es_indexed: true },
     location: {
         type: String,
         es_indexed: true,
