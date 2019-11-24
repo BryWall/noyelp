@@ -7,4 +7,20 @@ router.get('/', function(req, res, next) {
   mongoose.model('Restaurant').find({}, (err, restaurants) => res.render('index', {restaurants}));
 });
 
+router.get('/create', (req, res, next) => {
+  res.render('create');
+});
+
+router.post('/create', (req, res, next) => {
+  const restaurant = req.body;
+  mongoose.model('Restaurant').create(restaurant,(err, item) => {
+    if(!err){
+      return res.redirect('/');
+    }
+    console.log(err);
+    res.send(err);
+  })
+});
+
+
 module.exports = router;
