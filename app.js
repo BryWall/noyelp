@@ -24,6 +24,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
 require('./models/Restaurant');
+require('./models/Meal');
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

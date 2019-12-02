@@ -1,0 +1,24 @@
+extends layout
+
+block content
+    form(action="/edit/#{restaurant._id}", method="POST")
+        .form-group
+            label(for="name") Name
+            input#name.form-control(name="name", type="text", value="#{restaurant.name}")
+        .form-group
+            label(for='zipCode') ZipCode
+            input#zipCode.form-control(name="zipCode", type="number", value="#{restaurant.zipCode}")
+        .form-group
+            label(for='neighborhood') Neighborhood
+            input#neighborhood.form-control(name="neighborhood", type="text", value="#{restaurant.neighborhood}")
+        .form-group
+            label(for='councilDistrict') Council District
+            input#councilDistrict.form-control(name="councilDistrict", type="number", step="1", value="#{restaurant.councilDistrict}")
+        .form-group
+            label(for='location') Location
+            input#location.form-control(name="location", type="text", value="#{restaurant.location}")
+        .form-group
+            .btn-group
+                button.btn.btn-primary(type="submit") Update
+                a(href="/")
+                    button.btn.btn-danger(type="button") Cancel

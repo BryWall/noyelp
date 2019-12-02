@@ -36,4 +36,23 @@ router.post('/delete/:id', (req, res, next) => {
   });
 });
 
+router.get('/edit/:id', (req, res, next) => {
+  //Modifier un film
+  mongoose.model('Restaurant').findById(req.params.id, (err, restaurant) => {
+    if (err)
+      return res.send(err);
+
+    res.render('edit', { restaurant });
+  });
+});
+
+router.post('/edit/:id', (req, res, next) => {
+  const restaurant = req.body;
+  mongoose.model('Restaurant').findByIdAndUpdate(req.params.id, restaurant, (err, restaurant) => {
+    if (err)
+      return res.send(err);
+    res.redirect('/');
+  })
+});
+
 module.exports = router;
