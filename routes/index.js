@@ -55,4 +55,52 @@ router.post('/edit/:id', (req, res, next) => {
   })
 });
 
+
+router.get('/search', (req, res, next) => {
+  mongoose.model('Restaurant').search({
+    dis_max: {
+      queries: [
+        {
+          function_score: {
+            query: {
+              match: {
+                'name.ngram': {
+                  query: req.query.name,
+                  fuzziness: 'AUTO'
+                }
+              }
+            },
+            script_score: {
+              script: '_score * 0.7'
+            }
+          }
+        },
+        {
+          match: {
+            'name.keyword': {
+              'query': req.query.name,
+              'operator' : 'or',
+              'boost': 5.0,
+            }
+          }
+        }
+      ]
+    }
+  }, (err, items) => {
+    if (!err && items) {
+      const restaurants = items.hits.hits.map(item => {
+        const restaurant = item._source;
+        restaurant._id = restaurant._id;
+        return restaurant;
+      })
+      res.render('search', { restaurants })
+    }
+  });
+});
+
+router.post('/search', (req, res, next) => {
+  return res.redirect('/search?name='+req.body.restaurant);
+});
+
+
 module.exports = router;
