@@ -90,10 +90,15 @@ router.get('/search', (req, res, next) => {
     if (!err && items) {
       const restaurants = items.hits.hits.map(item => {
         const restaurant = item._source;
-        restaurant._id = restaurant._id;
+        restaurant._id = item._id;
+        restaurant._score = item._score;
+        console.log(restaurant);
         return restaurant;
       })
       res.render('search', { restaurants })
+    }
+    else {
+      console.log("error in search");
     }
   });
 });
