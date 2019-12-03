@@ -1,7 +1,7 @@
 extends layout
 
 block content
-    form(action="/edit/#{meal._id}", method="POST")
+    form(action="/meal/edit/#{meal._id}", method="POST")
         .form-group
             label(for="name") Name
             input#name.form-control(name="name", type="text", value="#{meal.name}")

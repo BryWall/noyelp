@@ -123,8 +123,8 @@ router.get('/meal/create/:id', (req, res, next) => {
 router.post('/meal/create/:id', (req, res, next) => {
   const meal = req.body;
   meal.restaurant_id = req.params.id;
-  meal.allergies = req.body.allergies.split(',');
-  meal.ingredients = req.body.ingredients.split(',');
+  meal.allergies = meal.allergies.split(',');
+  meal.ingredients = meal.ingredients.split(',');
   meal.vegan = meal.vegan === 'on';
   meal.halal = meal.halal === 'on';
   meal.kosher = meal.kosher === 'on';
@@ -163,8 +163,8 @@ router.get('/meal/edit/:id', (req, res, next) => {
 
 router.post('/meal/edit/:id', (req, res, next) => {
   const meal = req.body;
-  meal.allergies = req.body.allergies.split(',');
-  meal.ingredients = req.body.ingredients.split(',');
+  meal.allergies = meal.allergies.split(',');
+  meal.ingredients = meal.ingredients.split(',');
   meal.vegan = meal.vegan === 'on';
   meal.halal = meal.halal === 'on';
   meal.kosher = meal.kosher === 'on';
