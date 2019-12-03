@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 
 
 let MealSchema = new Schema({
+    restaurant_id:{ type: String, es_indexed : true},
     name: {
         type: String,
         es_indexed: true,

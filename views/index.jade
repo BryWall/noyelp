@@ -14,7 +14,8 @@ block content
     tbody
       each restaurant in restaurants
         tr
-          td #{restaurant.name}
+          td 
+            a(href="/restaurant/#{restaurant._id}") #{restaurant.name}
           td #{restaurant.zipCode}
           td #{restaurant.neighborhood}
           td #{restaurant.councilDistrict}

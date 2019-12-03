@@ -37,7 +37,7 @@ router.post('/delete/:id', (req, res, next) => {
 });
 
 router.get('/edit/:id', (req, res, next) => {
-  //Modifier un film
+  //Modifier un restaurant
   mongoose.model('Restaurant').findById(req.params.id, (err, restaurant) => {
     if (err)
       return res.send(err);
@@ -107,5 +107,72 @@ router.post('/search', (req, res, next) => {
   return res.redirect('/search?name='+req.body.restaurant);
 });
 
+router.get('/restaurant/:id', function(req, res, next) {
+  //La liste de tous les restaurants
+  mongoose.model('Restaurant').findById(req.params.id, (err, restaurant) => {
+    mongoose.model('Meal').find({restaurant_id : req.params.id}, (err, meals) => {
+        res.render('meals/index', {restaurant, meals, restaurant_id : req.params.id})
+    })
+  })
+});
+
+router.get('/meal/create/:id', (req, res, next) => {
+  res.render('meals/create',{restaurant_id : req.params.id});
+});
+
+router.post('/meal/create/:id', (req, res, next) => {
+  const meal = req.body;
+  meal.restaurant_id = req.params.id;
+  meal.allergies = req.body.allergies.split(',');
+  meal.ingredients = req.body.ingredients.split(',');
+  meal.vegan = meal.vegan === 'on';
+  meal.halal = meal.halal === 'on';
+  meal.kosher = meal.kosher === 'on';
+  mongoose.model('Meal').create(meal,(err, item) => {
+    if(!err){
+      return res.redirect('/restaurant/'+req.params.id);
+    }
+    console.log(err);
+    res.send(err);
+  })
+});
+
+router.get('/meal/delete/:id', (req, res, next) => {
+  mongoose.model('Meal').findById(req.params.id, (err, meal) => {
+    res.render('meals/delete', {meal, restaurant_id : meal.restaurant_id})
+  });
+});
+
+router.post('/meal/delete/:id', (req, res, next) => {
+  mongoose.model('Meal').findByIdAndDelete(req.params.id, (err, meal) => {
+    if(err)
+      return res.send(err);
+    res.redirect('/restaurant/'+meal.restaurant_id);
+  });
+});
+
+router.get('/meal/edit/:id', (req, res, next) => {
+  //Modifier un film
+  mongoose.model('Meal').findById(req.params.id, (err, meal) => {
+    if (err)
+      return res.send(err);
+
+    res.render('meals/edit', { meal, restaurant_id: meal.restaurant_id });
+  });
+});
+
+router.post('/meal/edit/:id', (req, res, next) => {
+  const meal = req.body;
+  meal.allergies = req.body.allergies.split(',');
+  meal.ingredients = req.body.ingredients.split(',');
+  meal.vegan = meal.vegan === 'on';
+  meal.halal = meal.halal === 'on';
+  meal.kosher = meal.kosher === 'on';
+  mongoose.model('Meal').findByIdAndUpdate(req.params.id, meal, (err, meal) => {
+    if (err)
+      return res.send(err);
+    res.redirect('/restaurant/'+meal.restaurant_id);
+  })
+});
 
 module.exports = router;

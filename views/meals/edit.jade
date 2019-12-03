@@ -1,0 +1,27 @@
+extends layout
+
+block content
+    form(action="/edit/#{meal._id}", method="POST")
+        .form-group
+            label(for="name") Name
+            input#name.form-control(name="name", type="text", value="#{meal.name}")
+        .form-group
+            label(for='allergies') Allergies
+            input#allergies.form-control(name="allergies", type="text", value="#{meal.allergies}")
+        .form-group
+            label(for='ingredients') Ingredients
+            input#ingredients.form-control(name="ingredients", type="text", value="#{meal.ingredients}")
+        .form-group
+            input#vegan(type="checkbox", name="vegan")
+            | Vegan ?
+        .form-group
+            input#halal(type="checkbox", name="halal")
+            | Halal ?
+        .form-group
+            input#kosher(type="checkbox", name="kosher")
+            | Kosher ?
+        .form-group
+            .btn-group
+                button.btn.btn-primary(type="submit") Edit
+                a(href="/restaurant/#{meal.restaurant_id}")
+                    button.btn.btn-danger(type="button") Cancel

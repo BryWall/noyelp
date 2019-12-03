@@ -1,0 +1,26 @@
+extends layout
+
+block content
+    ul.nav(style='margin-top: 80px').navbar-dark.bg-dark
+    h1 Restaurant : #{restaurant.name}
+    table.table
+        thead
+        th Name
+        th Allergies
+        th Ingredients
+        th Vegan
+        th Halal
+        th Kosher
+        th
+        tbody
+        each meal in meals
+            tr
+            td #{meal.name}
+            td #{meal.allergies}
+            td #{meal.ingredients}
+            td #{meal.vegan? 'X' : ''}
+            td #{meal.halal? 'X' : ''}
+            td #{meal.kosher? 'X' : ''}
+            td
+                a(href='/meal/edit/#{meal._id}') 🖊️
+                a(href='/meal/delete/#{meal._id}') 🗑️
