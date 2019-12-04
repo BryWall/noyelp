@@ -9,7 +9,7 @@ html
         a.text-dark(href="/") NoYELP
       nav.my-2.my-md-0.mr-md-3
         a.p-2.text-dark(href='/meal/create/#{restaurant_id}') New Meal
-      form.form-inline.mt-2.mt-md-0(action="/meal/search" method="post")
+      form.form-inline.mt-2.mt-md-0(action="/meal/search/#{restaurant_id}" method="post")
         input.form-control.mr-sm-2(type="text" placeholder="Meal" aria-label="search" name="meal")
         button.btn.btn-outline-success.my-2.my-sm-0(type="submit") Search
     div.container
