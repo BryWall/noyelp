@@ -11,17 +11,16 @@ block content
         th Neighborhood
         th CouncilDistrict
         th Location
-        th Score
         th
         tbody
         each restaurant in restaurants
             tr
-                td #{restaurant.name}
+                td 
+                    a(href="/restaurant/#{restaurant._id}") #{restaurant.name}
                 td #{restaurant.zipCode}
                 td #{restaurant.neighborhood}
                 td #{restaurant.councilDistrict}
                 td #{restaurant.location}
-                td #{restaurant._score}
                 td
                     a(href='/edit/#{restaurant._id}') 🖊️
                     a(href='/delete/#{restaurant._id}') 🗑️

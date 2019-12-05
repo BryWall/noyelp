@@ -12,7 +12,7 @@ let RestaurantSchema = new Schema({
             keyword: { type: 'text', analyzer: 'keyword_analyzer', index: 'analyzed'}
         }
     },
-    zipCode: { type: Number, es_indexed: true },
+    zipCode: { type: Number, es_indexed: true, es_type: 'integer' },
     neighborhood: {
         type: String,
         es_indexed: true,
@@ -21,7 +21,7 @@ let RestaurantSchema = new Schema({
             keyword: { type: 'text', analyzer: 'keyword_analyzer', index: 'analyzed'}
         }
     },
-    councilDistrict: { type: Number, es_indexed: true },
+    councilDistrict: { type: Number, es_indexed: true, es_type: 'integer' },
     location: {
         type: String,
         es_indexed: true,
@@ -37,29 +37,29 @@ RestaurantSchema.plugin(mongoosastic);
 const Restaurant = mongoose.model('Restaurant', RestaurantSchema);
 
 Restaurant.createMapping({
-    analysis : {
-        filter : {
+    analysis: {
+        filter: {
             ngram_filter: {
                 type: 'nGram',
-                min_gram : 3,
-                max_gram : 10,
-                token_chars : [
+                min_gram: 3,
+                max_gram: 10,
+                token_chars: [
                     'letter', 'digit', 'symbol', 'punctuation'
                 ]
             }
         },
-        analyzer : {
-            ngram_analyzer : {
+        analyzer: {
+            ngram_analyzer: {
                 type: 'custom',
                 tokenizer: 'whitespace',
-                filter : [
+                filter: [
                     'lowercase',
                     'asciifolding',
                     'ngram_filter'
                 ]
             },
-            keyword_analyzer : {
-                tokenizer : 'standard',
+            keyword_analyzer: {
+                tokenizer: 'standard',
                 filter: [
                     'lowercase',
                     'asciifolding'

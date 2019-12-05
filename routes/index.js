@@ -56,56 +56,128 @@ router.post('/edit/:id', (req, res, next) => {
 });
 
 
-router.get('/search', (req, res, next) => {
+router.get('/search', (req, res) => {
   mongoose.model('Restaurant').search({
-    dis_max: {
-      queries: [
-        {
-          function_score: {
-            query: {
-              match: {
-                'name.ngram': {
-                  query: req.query.name,
-                  fuzziness: 'AUTO'
+      dis_max: {
+          queries: [
+              {
+                  function_score: {
+                      query: {
+                          match: {
+                              'name.ngram': {
+                                  query: req.query.name,
+                                  fuzziness: 'AUTO'
+                              }
+                          }
+                      },
+                      script_score: {
+                          script: '_score * 0.7'
+                      }
+                  }
+              },
+              {
+                  function_score: {
+                      query: {
+                          match: {
+                              'neighborhood.ngram': {
+                                  query: req.query.neighborhood,
+                                  fuzziness: 'AUTO'
+                              }
+                          }
+                      },
+                      script_score: {
+                          script: '_score * 0.7'
+                      }
+                  }
+              },
+              {
+                  function_score: {
+                      query: {
+                          match: {
+                              'location.ngram': {
+                                  query: req.query.location,
+                                  fuzziness: 'AUTO'
+                              }
+                          }
+                      },
+                      script_score: {
+                          script: '_score * 0.7'
+                      }
+                  }
+              },
+              {
+                  match: {
+                      'name.keyword': {
+                          'query': req.query.name,
+                          'operator': 'or',
+                          'boost': 5.0,
+                      }
+                  }
+              },
+              {
+                match: {
+                    'neighborhood.keyword': {
+                        'query': req.query.neighborhood,
+                        'operator': 'or',
+                        'boost': 5.0,
+                    }
                 }
+              },
+              {
+                  match: {
+                      'location.keyword': {
+                          'query': req.query.location,
+                          'operator': 'or',
+                          'boost': 5.0,
+                      }
+                  }
               }
-            },
-            script_score: {
-              script: '_score * 0.7'
-            }
-          }
-        },
-        {
-          match: {
-            'name.keyword': {
-              'query': req.query.name,
-              'operator' : 'or',
-              'boost': 5.0,
-            }
-          }
-        }
-      ]
-    }
+          ]
+      }
   }, (err, items) => {
-    if (!err && items) {
-      const restaurants = items.hits.hits.map(item => {
-        const restaurant = item._source;
-        restaurant._id = item._id;
-        restaurant._score = item._score;
-        console.log(restaurant);
-        return restaurant;
-      })
-      res.render('search', { restaurants })
-    }
-    else {
-      console.log("error in search");
-    }
+      if (!err && items) {
+          const restaurants = items.hits.hits.map(item => {
+              const restaurant = item._source;
+              restaurant._id = item._id;
+              restaurant._score = item._score;
+              return restaurant;
+          });
+          res.render('search', {restaurants})
+      }
   });
 });
 
-router.post('/search', (req, res, next) => {
-  return res.redirect('/search?name='+req.body.restaurant);
+router.post('/search', (req, res) => {
+  console.log(req.body);
+
+  let request = {
+    multi_match: {
+      query: req.body.name,
+      fields: [
+        'name.ngram',
+        'name.keyword',
+        'neighborhood.ngram',
+        'neighborhood.keyword',
+        'location.ngram',
+        'location.keyword'
+      ],
+      fuzziness : 'AUTO'
+    },
+  };
+
+  mongoose.model('Restaurant').search(request, (err, items) => {
+    console.log(items)
+    const restaurants = items.hits.hits.map(item => {
+      const restaurant = item._source;
+      restaurant._id = item._id;
+      restaurant._score = item._score;
+      return restaurant;
+    })
+    res.render('search', { restaurants })
+  })
+
 });
+
 
 router.get('/restaurant/:id', function(req, res, next) {
   //La liste de tous les restaurants
@@ -152,7 +224,7 @@ router.post('/meal/delete/:id', (req, res, next) => {
 });
 
 router.get('/meal/edit/:id', (req, res, next) => {
-  //Modifier un film
+  //Modifier un meal
   mongoose.model('Meal').findById(req.params.id, (err, meal) => {
     if (err)
       return res.send(err);
@@ -176,37 +248,23 @@ router.post('/meal/edit/:id', (req, res, next) => {
 });
 
 
-router.get('/meal/search/:id', (req, res, next) => {
-  mongoose.model('Meal').search({
-    dis_max: {
-      queries: [
-        {
-          function_score: {
-            query: {
-              match: {
-                'name.ngram': {
-                  query: req.query.name,
-                  fuzziness: 'AUTO'
-                }
-              }
-            },
-            script_score: {
-              script: '_score * 0.7'
-            }
-          }
-        },
-        {
-          match: {
-            'name.keyword': {
-              'query': req.query.name,
-              'operator' : 'or',
-              'boost': 5.0,
-            }
-          }
-        }
-      ]
-    }
-  }, (err, items) => {
+router.post('/meal/search/:id', (req, res, next) => {
+  let request = {
+    multi_match: {
+      query: req.body.meal,
+      fields: [
+        'name.ngram',
+        'name.keyword',
+        'allergies.ngram',
+        'allergies.keyword',
+        'ingredients.ngram',
+        'ingredients.keyword'
+      ],
+      fuzziness : 'AUTO'
+    },
+  };
+
+  mongoose.model('Meal').search(request, (err, items) => {
     if (!err && items) {
       const meals = [];
       items.hits.hits.forEach(item => {
@@ -225,8 +283,5 @@ router.get('/meal/search/:id', (req, res, next) => {
   });
 });
 
-router.post('/meal/search/:id', (req, res, next) => {
-  return res.redirect('/meal/search/'+req.params.id+'?name='+req.body.meal);
-});
 
 module.exports = router;
